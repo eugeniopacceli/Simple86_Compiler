@@ -15,6 +15,7 @@ using namespace std;
 
 // Compiler module for Simple86
 class Compiler{
+
     public:
         Compiler(ifstream& input, ofstream& output, bool verboseEnabled){
             input.close();
