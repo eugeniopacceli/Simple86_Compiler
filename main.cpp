@@ -47,7 +47,7 @@ int main (int argc, char *argv[]){
         exit(EXIT_FAILURE);
     }
 
-    input.open(inputName.c_str(),ios::binary);
+    input.open(inputName.c_str());
     output.open(outputName.c_str(),ios::binary);
 
     if(input.is_open() && output.is_open()){
