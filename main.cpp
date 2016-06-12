@@ -22,8 +22,8 @@ int main (int argc, char *argv[]){
     bool verboseEnabled = false;
     string outputName = "exec.sa";
     string inputName = "";
-    ifstream input;
-    ofstream output;
+    ifstream* input;
+    ofstream* output;
     Compiler* comp;
 
     if(argc < 2){
@@ -47,10 +47,10 @@ int main (int argc, char *argv[]){
         exit(EXIT_FAILURE);
     }
 
-    input.open(inputName.c_str());
-    output.open(outputName.c_str(),ios::binary);
+    input = new ifstream(inputName.c_str());
+    output = new ofstream(outputName.c_str(),ios::binary);
 
-    if(input.is_open() && output.is_open()){
+    if(input->is_open() && output->is_open()){
         comp = new Compiler(input, output, verboseEnabled);
         comp->compile();
     }else{
@@ -59,5 +59,7 @@ int main (int argc, char *argv[]){
     }
 
     delete comp;
+    delete input;
+    delete output;
     return EXIT_SUCCESS;
 }

@@ -6,100 +6,46 @@
 #include <string>
 #include <cstdlib>
 #include <cstdint>
+#include <vector>
+#include "Instruction.h"
 
 using namespace std;
 
 #define LOW_MASK  0000000011111111
 #define HIGH_MASK 1111111100000000
-#define MEMORY_LIMIT 1000
 
 // Compiler module for Simple86
 class Compiler{
 
+    private:
+        ifstream* input;
+        ofstream* output;
+        vector<Instruction> program;
+
     public:
-        Compiler(ifstream& input, ofstream& output, bool verboseEnabled){
-            input.close();
-            output.close();
+        Compiler(ifstream* input, ofstream* output, bool verboseEnabled){
+            this->input = input;
+            this->output = output;
+            this->program.clear();
+        }
+
+        void readProgram(ifstream* input){
+            string str;
+            int i = 0;
+            cout << "The following lines were read:" << endl;
+            while(getline(*input, str)){
+                this->program.push_back(Instruction(str));
+                cout << "[" << i++ << "] : " << program.back().fullText << endl;
+            }
         }
 
         int compile(){
-            string str;
-            queue<string> terms;
-        	while(getline(input, str)){
-        		istringstream iss(str);
-        		string buffer;
-        		while(iss >> buffer){
-        			cout << buffer << "\n";
-        			terms.push(buffer);
-        		}
-        		
-        		if(terms.front()[0] == '_'){ //label
-        			//put label in the table
-        		}
-        		else{ //opcode
-        			if(terms.front() == "MOV"){
-        				//binarycode << "1 em binario em 16bits?"
-        				//binarycode << (char)0 << (char)1 ?
-        				//update memPos
-        				terms.pop();
-        				if(terms.front()[0] > 64 && terms.front()[0] < 104){ //register
-        					if(terms.front()=="AX")
-        
-        					else if(terms.front()=="AL")
-        
-        					else if(terms.front()=="AH")
-        
-        					else if(terms.front()=="BX")
-        
-        					else if(terms.front()=="BL")
-        
-        					else if(terms.front()=="BH")
-        
-        					else if(terms.front()=="CX")
-        
-        					else if(terms.front()=="CH")
-        
-        					else if(terms.front()=="CL")
-        
-        				}else{ //memory
-        					//turn the address into binary?
-        				}
-        
-        				terms.pop();
-        				if(terms.front()[0] > 64 && terms.front()[0] < 104){ //register
-        					if(terms.front()=="AX")
-        
-        					else if(terms.front()=="AL")
-        
-        					else if(terms.front()=="AH")
-        
-        					else if(terms.front()=="BX")
-        
-        					else if(terms.front()=="BL")
-        
-        					else if(terms.front()=="BH")
-        
-        					else if(terms.front()=="CX")
-        
-        					else if(terms.front()=="CH")
-        
-        					else if(terms.front()=="CL")
-        
-        				}
-        				else if(terms.front().length == 5){ //immediate length=5?
-        					
-        				}
-        				else{//memory length!=5?
-        
-        				}
-        			}
-        			}else if(terms.front() == "ADD"){
-        
-        			}//repeat and adjust for each instruction
-        		}
-        
-        	}
-            
+            this->readProgram(this->input);
+            for(uint i = 0; i < program.size(); i++){
+                program.at(i).debugInstruction();
+            }
+            input->close();
+            output->close();
             return 1;
         }
 
