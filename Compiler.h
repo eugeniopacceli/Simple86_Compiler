@@ -140,23 +140,25 @@ class Compiler{
                     
                     //opA
                     this->output->put(0);
-                    if(i.type==Instruction::R || i.type==Instruction::RR || i.type==Instruction:RM || i.type==Instruction::RI){
+                    if(i.opType==OperandType::R || i.opType==OperandType::RR || i.opType==OperandType::RM || i.opType==OperandType::RI){
                         this->output->put(0);
                         this->output->put((char)i.getRegisterCode(i.opA));
                     }
-                    else if(i.type==Instruction::I)
+                    else if(i.opType==OperandType::I)
                         this->output->put((char)std::stoul(i.opA, nullptr, 16));
-                    else if(i.type==Instruction::M || i.type==Instruction::MI || i.type==Instruction::MR)
+                    else if(i.opType==OperandType::M || i.opType==OperandType::MI || i.opType==OperandType::MR)
+                        int b;
                         //label stuff here
                     
                     //opB
-                    if(i.type==Instruction::RR || i.type==Instruction:MR){
+                    if(i.opType==OperandType::RR || i.opType==OperandType::MR){
                         this->output->put(0);
                         this->output->put((char)i.getRegisterCode(i.opB));
                     }
-                    else if(i.type==Instruction::MI || i.type==Instruction::RI)
-                        this->output->put((int16_t)std::stoul(i.opAB, nullptr, 16));
-                    else if(i.type==Instruction::RM)
+                    else if(i.opType==OperandType::MI || i.opType==OperandType::RI)
+                        this->output->put((int16_t)std::stoul(i.opB, nullptr, 16));
+                    else if(i.opType==OperandType::RM)
+                        int a;
                         //label stuff here
                 }
             }
