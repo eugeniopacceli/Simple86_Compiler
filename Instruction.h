@@ -15,6 +15,18 @@ enum InstructionType{
     VAR
 };
 
+enum operandTypes{
+    opN = 0;
+    opR = 1;
+    opM = 2;
+    opRM = 3;
+    opMR = 4;
+    opRR = 5;
+    opMI = 6;
+    opRI = 7;
+    opI = 8;
+}
+
 enum InstructionCode{
     MOV = 1,
     ADD = 2,
