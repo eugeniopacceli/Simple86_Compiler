@@ -138,24 +138,26 @@ class Instruction{
             }
         }
 
-        OperandType determinOperandType(string opA, string OpB){
+        OperandType determinOperandType(string a, string b){
             char opAType = '0';
             char opBType = '0';
             string typeStr;
             
-            if(!(opA.empty())){
-                if(opA.at(0)== '0'){
+            if(!(a.empty())){
+                if(a.at(0)== '0'){
                     opAType = 'I';
-                }else if(opA.at(0) == '_'){
+                }else if(a.at(0) == '_'){
                     opAType = 'M';
                 }else{
                     opAType = 'R';
                 }
                 
-                if(!(opB.empty())){
-                    if(opB.at(0)== '_'){
+                if(!(b.empty())){
+                    if(b.at(0)== '_'){
                         opBType = 'M';
-                    } else{
+                    }else if(b.at(0) == '0'){
+                        opBType = 'I';
+                    }else{
                         opBType = 'R';
                     }
                 }
@@ -172,6 +174,10 @@ class Instruction{
                 return OperandType::M;
             }else if(typeStr == "R0"){
                 return OperandType::R;
+            }else if(typeStr == "RI"){
+                return OperandType::RI;
+            }else if(typeStr == "MI"){
+                return OperandType::MI;
             }else if(typeStr == "MR"){
                 return OperandType::MR;
             }else if(typeStr == "RM"){
