@@ -11,8 +11,8 @@
 
 using namespace std;
 
-#define LOW_MASK  0000000011111111
-#define HIGH_MASK 1111111100000000
+#define LOW_MASK  255 //0000000011111111
+#define HIGH_MASK -32678 // 1111111100000000
 
 // Compiler module for Simple86
 class Compiler{
