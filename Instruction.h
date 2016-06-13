@@ -139,26 +139,48 @@ class Instruction{
         }
 
         OperandType determinOperandType(string opA, string OpB){
-            char opAType = '0', opBType = '0';
-            OperandType type = OperandType::N;
+            char opAType = '0';
+            char opBType = '0';
+            string typeStr;
+            
             if(!(opA.empty())){
-                if(opA[0]=='0')
-                    opAType = 8; //immediate
-                else if(opA[0]=='_')
-                    opAType = 2; //memory (label)
-                else
-                    opAType = 1; //register
+                if(opA.at(0)== '0'){
+                    opAType = 'I';
+                }else if(opA.at(0) == '_'){
+                    opAType = 'M';
+                }else{
+                    opAType = 'R';
+                }
+                
                 if(!(opB.empty())){
-                    if(opA[0]=='0')
-                        opAType = 8; //immediate
-                    else if(opA[0]=='_')
-                        opAType = 2; //memory (label)
-                    else
-                        opAType = 1; //register
+                    if(opB.at(0)== '_'){
+                        opBType = 'M';
+                    } else{
+                        opBType = 'R';
+                    }
                 }
             }
 
-            return type;
+            typeStr += opAType;
+            typeStr += opBType;
+
+            if(typeStr == "00"){
+                return OperandType::N;
+            }else if(typeStr == "I0"){
+                return OperandType::I;
+            }else if(typeStr == "M0"){
+                return OperandType::M;
+            }else if(typeStr == "R0"){
+                return OperandType::R;
+            }else if(typeStr == "MR"){
+                return OperandType::MR;
+            }else if(typeStr == "RM"){
+                return OperandType::RM;
+            }else if(typeStr == "RR"){
+                return OperandType::RR;
+            }
+
+            return OperandType::N;
         }
 
         Instruction(string full){
