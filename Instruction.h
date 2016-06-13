@@ -139,7 +139,7 @@ class Instruction{
         }
 
         OperandType determinOperandType(string opA, string OpB){
-            char opAType = '0', opBType = '0';
+            char opAType = 0, opBType = 0;
             OperandType type = OperandType::N;
             if(!(opA.empty())){
                 if(opA[0]=='0')
@@ -157,7 +157,27 @@ class Instruction{
                         opAType = 1; //register
                 }
             }
-
+            if(opAType == 8)
+                type = OperandType::I;
+            else if(opAType == 2){
+                if(opBType == 0)
+                    type = OperandType::M;
+                else if(opBType == 8)
+                    type = OperandType::MI;
+                else if(opBType == 1)
+                    type == OperandType::MR;
+            }
+            else if(opAType == 1){
+                if(opBType == 0)
+                    type = OperandType::R;
+                else if(opBType == 8)
+                    type = OperandType::RI;
+                else if(opBType == 1)
+                    type == OperandType::RR;
+                else if(opBType == 2){
+                    type == OperandType::MR;
+                }
+            }
             return type;
         }
 
