@@ -146,6 +146,7 @@ class Compiler{
                     } else if(i.opType==OperandType::I){
                         this->output->put((char)std::stoul(i.opA, nullptr, 16));
                     } else if(i.opType==OperandType::M || i.opType==OperandType::MI || i.opType==OperandType::MR){
+                        this->output->put(0);
                         this->output->put((char)stoi(i.opA));
                     }
                     
@@ -157,6 +158,7 @@ class Compiler{
                         this->output->put((int16_t)std::stoul(i.opB, nullptr, 16));
                     }
                     else if(i.opType==OperandType::RM){
+                        this->output->put(0);
                         this->output->put((char)stoi(i.opB));
                     }
                 }
