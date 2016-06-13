@@ -141,10 +141,20 @@ class Instruction{
         OperandType determinOperandType(string opA, string OpB){
             char opAType = '0', opBType = '0';
             OperandType type = OperandType::N;
-            if(!(this->opA.empty())){
-                
-                if(!(this->opB.empty())){
-                
+            if(!(opA.empty())){
+                if(opA[0]=='0')
+                    opAType = 8; //immediate
+                else if(opA[0]=='_')
+                    opAType = 2; //memory (label)
+                else
+                    opAType = 1; //register
+                if(!(opB.empty())){
+                    if(opA[0]=='0')
+                        opAType = 8; //immediate
+                    else if(opA[0]=='_')
+                        opAType = 2; //memory (label)
+                    else
+                        opAType = 1; //register
                 }
             }
 
