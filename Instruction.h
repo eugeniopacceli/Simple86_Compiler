@@ -15,16 +15,16 @@ enum InstructionType{
     VAR
 };
 
-enum operandTypes{
-    opN = 0;
-    opR = 1;
-    opM = 2;
-    opRM = 3;
-    opMR = 4;
-    opRR = 5;
-    opMI = 6;
-    opRI = 7;
-    opI = 8;
+enum OperandType{
+    N = 0;
+    R = 1;
+    M = 2;
+    RM = 3;
+    MR = 4;
+    RR = 5;
+    MI = 6;
+    RI = 7;
+    I = 8;
 }
 
 enum InstructionCode{
@@ -71,6 +71,7 @@ class Instruction{
         string opA, opB;
         InstructionType type;
         InstructionCode code;
+        OperandType opType;
         int16_t address;
         int16_t size;
 
