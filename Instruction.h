@@ -141,7 +141,7 @@ class Instruction{
         OperandType determinOperandType(string a, string b){
             char opAType = '0';
             char opBType = '0';
-            string typeStr;
+            string typeStr = "";
             
             if(!(a.empty())){
                 if(a.at(0)== '0'){
