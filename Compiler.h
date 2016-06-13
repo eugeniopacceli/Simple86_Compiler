@@ -103,6 +103,8 @@ class Compiler{
                 this->writeTextOutput(this->program);
             }
 
+            this->writeBin(this->program);
+
             input->close();
             output->close();
             return 1;
@@ -126,18 +128,16 @@ class Compiler{
             return bits/8;
         }
 
+
+        void writeBin(vector<Instruction> toWrite){
+
+        }
+
         ostream& write_word(ostream& out, int16_t value){
             for (uint size = sizeof(int16_t); size > 0; size--)
                 out.put(static_cast<char>(value & 0xFF));
                 value >>= 8;
             return out;
-        }
-
-        istream& read_word(istream& in, int16_t value){
-            uint size = 0;
-            for (value = 0; size < sizeof(int16_t); size++)
-                value |= in.get() << (8 * size);
-            return in;
         }
 };
 
