@@ -130,7 +130,36 @@ class Compiler{
 
 
         void writeBin(vector<Instruction> toWrite){
-
+            
+            for(Instruction& i : toWrite){
+                if(i.type == INSTRUCTION){
+                    this->output->put(0);
+                    this->output->put((char)i.code);
+                    this->output->put(0);
+                    this->output->put((char)i.type);
+                    
+                    //opA
+                    this->output->put(0);
+                    if(i.type==Instruction::R || i.type==Instruction::RR || i.type==Instruction:RM || i.type==Instruction::RI){
+                        this->output->put(0);
+                        this->output->put((char)i.getRegisterCode(i.opA));
+                    }
+                    else if(i.type==Instruction::I)
+                        this->output->put((char)std::stoul(i.opA, nullptr, 16));
+                    else if(i.type==Instruction::M || i.type==Instruction::MI || i.type==Instruction::MR)
+                        //label stuff here
+                    
+                    //opB
+                    if(i.type==Instruction::RR || i.type==Instruction:MR){
+                        this->output->put(0);
+                        this->output->put((char)i.getRegisterCode(i.opB));
+                    }
+                    else if(i.type==Instruction::MI || i.type==Instruction::RI)
+                        this->output->put((int16_t)std::stoul(i.opAB, nullptr, 16));
+                    else if(i.type==Instruction::RM)
+                        //label stuff here
+                }
+            }
         }
 
         ostream& write_word(ostream& out, int16_t value){
