@@ -21,21 +21,27 @@ class Compiler{
         ifstream* input;
         ofstream* output;
         vector<Instruction> program;
+        int16_t programSizeInBytes;
 
     public:
         Compiler(ifstream* input, ofstream* output, bool verboseEnabled){
             this->input = input;
             this->output = output;
             this->program.clear();
+            this->programSizeInBytes = 0;
         }
 
         void readProgram(ifstream* input){
             string str;
-            int i = 0;
             cout << "The following lines were read:" << endl;
             while(getline(*input, str)){
+                // Instruction decode
                 this->program.push_back(Instruction(str));
-                cout << "[" << i++ << "] : " << program.back().fullText << endl;
+                // Address computation
+                this->program.back().address = programSizeInBytes;
+                this->programSizeInBytes += this->bitSpaceToBytes(program.back().size);
+                // ---
+                cout << "[" << this->program.back().address << "] : " << program.back().fullText << endl;
             }
         }
 
@@ -47,6 +53,10 @@ class Compiler{
             input->close();
             output->close();
             return 1;
+        }
+
+        int16_t bitSpaceToBytes(int16_t bits){
+            return bits/8;
         }
 
         ostream& write_word(ostream& out, int16_t value){

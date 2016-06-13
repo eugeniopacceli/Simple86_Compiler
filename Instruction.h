@@ -15,29 +15,41 @@ enum InstructionType{
     VAR
 };
 
-
 enum InstructionCode{
-    MOV,
-    ADD,
-    SUB,
-    AND,
-    OR,
-    CMP,
-    MUL,
-    DIV,
-    NOT,
-    JUMP,
-    JZ,
-    JS,
-    CALL,
-    PUSH,
-    POP,
-    READ,
-    WRITE,
-    RET,
-    DUMP,
-    HALT,
-    NOPE
+    MOV = 1,
+    ADD = 2,
+    SUB = 3,
+    AND = 6,
+    OR = 8,
+    CMP = 9,
+    MUL = 4,
+    DIV = 5,
+    NOT = 7,
+    JUMP = 10,
+    JZ = 11,
+    JS = 12,
+    CALL = 13,
+    PUSH = 15,
+    POP = 16,
+    READ =18,
+    WRITE = 19,
+    RET = 14,
+    DUMP = 17,
+    HALT = 20,
+    NOPE = 99
+};
+
+enum RegisterCode{
+    AL = 0,
+    AH = 1,
+    AX = 2,
+    BH = 3,
+    BL = 4,
+    BX = 5,
+    CL = 6,
+    CH = 7,
+    CX = 8,
+    ZF = 9
 };
 
 class Instruction{
