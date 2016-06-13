@@ -131,6 +131,7 @@ class Compiler{
 
         void writeBin(vector<Instruction> toWrite){
             
+            this->output->put(0);
             for(Instruction& i : toWrite){
                 if(i.type == INSTRUCTION){
                     this->output->put(0);
@@ -139,27 +140,25 @@ class Compiler{
                     this->output->put((char)i.type);
                     
                     //opA
-                    this->output->put(0);
                     if(i.opType==OperandType::R || i.opType==OperandType::RR || i.opType==OperandType::RM || i.opType==OperandType::RI){
                         this->output->put(0);
                         this->output->put((char)i.getRegisterCode(i.opA));
-                    }
-                    else if(i.opType==OperandType::I)
+                    } else if(i.opType==OperandType::I){
                         this->output->put((char)std::stoul(i.opA, nullptr, 16));
-                    else if(i.opType==OperandType::M || i.opType==OperandType::MI || i.opType==OperandType::MR)
-                        int b;
-                        //label stuff here
+                    } else if(i.opType==OperandType::M || i.opType==OperandType::MI || i.opType==OperandType::MR){
+                        this->output->put((char)stoi(i.opA));
+                    }
                     
                     //opB
                     if(i.opType==OperandType::RR || i.opType==OperandType::MR){
                         this->output->put(0);
                         this->output->put((char)i.getRegisterCode(i.opB));
-                    }
-                    else if(i.opType==OperandType::MI || i.opType==OperandType::RI)
+                    } else if(i.opType==OperandType::MI || i.opType==OperandType::RI){
                         this->output->put((int16_t)std::stoul(i.opB, nullptr, 16));
-                    else if(i.opType==OperandType::RM)
-                        int a;
-                        //label stuff here
+                    }
+                    else if(i.opType==OperandType::RM){
+                        this->output->put((char)stoi(i.opB));
+                    }
                 }
             }
         }
