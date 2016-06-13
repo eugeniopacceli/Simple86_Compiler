@@ -16,16 +16,16 @@ enum InstructionType{
 };
 
 enum OperandType{
-    N = 0;
-    R = 1;
-    M = 2;
-    RM = 3;
-    MR = 4;
-    RR = 5;
-    MI = 6;
-    RI = 7;
-    I = 8;
-}
+    N = 0,
+    R = 1,
+    M = 2,
+    RM = 3,
+    MR = 4,
+    RR = 5,
+    MI = 6,
+    RI = 7,
+    I = 8
+};
 
 enum InstructionCode{
     MOV = 1,
@@ -142,6 +142,8 @@ class Instruction{
             this->id.erase(remove_if(this->id.begin(), this->id.end(), ::isspace), this->id.end());
             this->opA.erase(remove_if(this->opA.begin(), this->opA.end(), ::isspace), this->opA.end());
             this->opB.erase(remove_if(this->opB.begin(), this->opB.end(), ::isspace), this->opB.end());
+            // Remove ':'
+            this->id.erase(std::remove(this->id.begin(), this->id.end(), ':'), this->id.end());
 
             if(id.at(0) == '_'){
                 this->type = InstructionType::LABEL;
@@ -158,10 +160,17 @@ class Instruction{
             this->address = 0;
         }
 
-        void debugInstruction(){
-            cout << this->fullText << endl;
-            cout << "Id: " << this->id << endl << "OpA: " << this->opA << endl << "OpB: " << this->opB << endl;
-            cout << "Size: " << this->size << endl << "Address: " << this->address << endl;
+        string debugInstruction(){
+            string str = this->id;
+            if(!(this->opA.empty())){
+                str += ' ' + this->opA;
+            }
+            if(!(this->opB.empty())){
+                str += ", " + this->opB ;
+            }
+            transform(str.begin(), str.end(), str.begin(), ::toupper);
+
+            return str;
         }
 };
 

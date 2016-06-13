@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <cstdint>
 #include <vector>
+#include <iomanip>
 #include "Instruction.h"
 
 using namespace std;
@@ -22,6 +23,7 @@ class Compiler{
         ofstream* output;
         vector<Instruction> program;
         int16_t programSizeInBytes;
+        bool verboseEnabled;
 
     public:
         Compiler(ifstream* input, ofstream* output, bool verboseEnabled){
@@ -29,11 +31,16 @@ class Compiler{
             this->output = output;
             this->program.clear();
             this->programSizeInBytes = 0;
+            this->verboseEnabled = verboseEnabled;
         }
 
         void readProgram(ifstream* input){
             string str;
-            cout << "The following lines were read:" << endl;
+            if(this->verboseEnabled){
+                cout << "The following commands were read:" << endl;
+                cout << left << setw(15) << setfill(' ') << "Pred. Address";
+                cout << left << setw(30) << setfill(' ') << "Command" << endl;
+            }
             while(getline(*input, str)){
                 // Instruction decode
                 this->program.push_back(Instruction(str));
@@ -41,18 +48,78 @@ class Compiler{
                 this->program.back().address = programSizeInBytes;
                 this->programSizeInBytes += this->bitSpaceToBytes(program.back().size);
                 // ---
-                cout << "[" << this->program.back().address << "] : " << program.back().fullText << endl;
+                if(this->verboseEnabled){
+                    cout << left << setw(15) << setfill(' ') << this->program.back().address;
+                    cout << left << setw(30) << setfill(' ') << program.back().fullText << endl;
+                }
+            }
+            if(this->verboseEnabled){
+                cout << endl;
+            }
+        }
+
+        void resolveLabels(vector<Instruction>& instructions){
+            if(this->verboseEnabled){
+                cout << left << "Table of names " << setw(15) << setfill('=') << '=' << endl;
+                cout << left << setw(15) << setfill(' ') << "Name";
+                cout << left << setw(15) << setfill(' ') << "Address" << endl;                
+            }
+
+            for(Instruction& i : instructions){
+                if(i.type == InstructionType::LABEL || i.type == InstructionType::VAR){
+                    if(i.type == InstructionType::VAR){
+                        i.address = this->programSizeInBytes;
+                        this->programSizeInBytes += 2;
+                    }
+
+                    if(this->verboseEnabled){
+                        cout << left << setw(15) << setfill(' ') << i.id;
+                        cout << left << setw(15) << setfill(' ') << i.address << endl;
+                    }
+
+                    for(Instruction& j : instructions){
+                        if(j.type == InstructionType::INSTRUCTION){
+                            if(j.opA == i.id){
+                                j.opA = to_string(i.address);
+                            }
+                            if(j.opB == i.id){
+                                j.opB = to_string(i.address);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(this->verboseEnabled){
+                cout << left << setw(30) << setfill('=') << '=' << endl << endl;
             }
         }
 
         int compile(){
             this->readProgram(this->input);
-            for(uint i = 0; i < program.size(); i++){
-                program.at(i).debugInstruction();
+            this->resolveLabels(this->program);
+            
+            if(this->verboseEnabled){
+                this->writeTextOutput(this->program);
             }
+
             input->close();
             output->close();
             return 1;
+        }
+
+        void writeTextOutput(vector<Instruction> program){
+            cout << "The following program will be written in binary:" << endl;
+            cout << left << setw(15) << setfill(' ') << "Address";
+            cout << left << setw(30) << setfill(' ') << "Command";
+            cout << left << setw(10) << setfill(' ') << "Size (bytes)" << endl;
+            for(Instruction& ins : program){
+                if(ins.type != InstructionType::VAR && ins.type != InstructionType::LABEL){
+                    cout << left << setw(15) << setfill(' ') << ins.address;
+                    cout << left << setw(30) << setfill(' ') << ins.debugInstruction();
+                    cout << left << setw(10) << setfill(' ') << this->bitSpaceToBytes(ins.size) << endl;
+                }
+            }
         }
 
         int16_t bitSpaceToBytes(int16_t bits){
