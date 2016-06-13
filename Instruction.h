@@ -61,7 +61,7 @@ enum RegisterCode{
     CL = 6,
     CH = 7,
     CX = 8,
-    ZF = 9
+    NORG = 99
 };
 
 class Instruction{
@@ -99,6 +99,19 @@ class Instruction{
             return InstructionCode::NOPE;
         }
 
+        RegisterCode getRegisterCode(string id){
+            if(id == "al") return RegisterCode::AL;
+            if(id == "ah") return RegisterCode::AH;
+            if(id == "ax") return RegisterCode::AX;
+            if(id == "bh") return RegisterCode::BH;
+            if(id == "bl") return RegisterCode::BL;
+            if(id == "bx") return RegisterCode::BX;
+            if(id == "cl") return RegisterCode::CL;
+            if(id == "ch") return RegisterCode::CH;
+            if(id == "cx") return RegisterCode::CX;
+            return RegisterCode::NORG;
+        }
+
         int16_t getInstructionSize(InstructionCode code){
             switch(code){ // without breaks, a switch case falls to the cases bellow.
                 case InstructionCode::MOV:
@@ -123,6 +136,19 @@ class Instruction{
                 case InstructionCode::HALT: return 16;
                 default: return 0;
             }
+        }
+
+        OperandType determinOperandType(string opA, string OpB){
+            char opAType = '0', opBType = '0';
+            OperandType type = OperandType::N;
+            if(!(this->opA.empty())){
+                
+                if(!(this->opB.empty())){
+                
+                }
+            }
+
+            return type;
         }
 
         Instruction(string full){
@@ -156,6 +182,7 @@ class Instruction{
                 this->code = getInstructionCode(this->id);
             }
 
+            this->opType = this->determinOperandType(this->opA,this->opB);
             this->size = getInstructionSize(this->code);
             this->address = 0;
         }
