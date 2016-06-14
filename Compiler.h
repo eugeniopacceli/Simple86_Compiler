@@ -50,13 +50,7 @@ class Compiler{
                     this->program.push_back(Instruction(str.substr(0,split)));
                     this->program.back().address = programSizeInBytes;
                     if(this->verboseEnabled){
-                        cout << left << setw(15) << setfill(' ') << this->program.back().address;
-                        cout << left << setw(10) << setfill(' ') << program.back().id;
-                        if(!program.back().opA.empty())
-                            cout << this->program.back().opA;
-                        if(!program.back().opB.empty())
-                            cout << "," << this->program.back().opB;
-                        cout << endl;
+                        this->debugReceivedInstruction(this->program.back());
                     }
                     str = str.substr(split+1,str.size());
                     if(str.empty()){
@@ -73,13 +67,7 @@ class Compiler{
                 this->programSizeInBytes += this->bitSpaceToBytes(program.back().size);
                 // ---
                 if(this->verboseEnabled){
-                    cout << left << setw(15) << setfill(' ') << this->program.back().address;
-                    cout << left << setw(10) << setfill(' ') << program.back().id;
-                    if(!program.back().opA.empty())
-                        cout << this->program.back().opA;
-                    if(!program.back().opB.empty())
-                        cout << "," << this->program.back().opB;
-                    cout << endl;
+                    this->debugReceivedInstruction(this->program.back());
                 }
             }
             if(this->verboseEnabled){
@@ -198,11 +186,17 @@ class Compiler{
             }
         }
 
-        ostream& write_word(ostream& out, int16_t value){
-            for (uint size = sizeof(int16_t); size > 0; size--)
-                out.put(static_cast<char>(value & 0xFF));
-                value >>= 8;
-            return out;
+        void debugReceivedInstruction(Instruction& i){
+            string ops = i.id;
+            if(!i.opA.empty()){
+                ops += " " + i.opA;
+            }
+            if(!i.opB.empty()){
+                ops += ", " + i.opB;
+            }
+            cout << left << setw(15) << setfill(' ') << i.address;
+            cout << left << setw(10) << setfill(' ') << ops;
+            cout << endl;
         }
 };
 
