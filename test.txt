@@ -1,8 +1,0 @@
-_label:
-add a, 10
-add b, 10
-mov a
-mul b
-_labelhue:
-mov _label, _label
-mov b, _labelhue

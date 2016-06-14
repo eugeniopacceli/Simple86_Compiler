@@ -48,7 +48,7 @@ class Compiler{
                     split = str.find( ":", 0);
                     // Label decode
                     this->program.push_back(Instruction(str.substr(0,split)));
-                    this->program.back().address = programSizeInBytes;
+                    this->program.back().address = programSizeInBytes / 2;
                     if(this->verboseEnabled){
                         this->debugReceivedInstruction(this->program.back());
                     }
@@ -63,7 +63,7 @@ class Compiler{
                 // Instruction decode
                 this->program.push_back(Instruction(str));
                 // Address computation
-                this->program.back().address = programSizeInBytes;
+                this->program.back().address = programSizeInBytes / 2;
                 this->programSizeInBytes += this->bitSpaceToBytes(program.back().size);
                 // ---
                 if(this->verboseEnabled){
@@ -85,7 +85,8 @@ class Compiler{
             for(Instruction& i : instructions){
                 if(i.type == InstructionType::LABEL || i.type == InstructionType::VAR){
                     if(i.type == InstructionType::VAR){
-                        i.address = this->programSizeInBytes;
+                        i.address = this->programSizeInBytes / 2;
+                        i.id = i.opA;
                         this->programSizeInBytes += 2;
                     }
 
@@ -97,10 +98,10 @@ class Compiler{
                     for(Instruction& j : instructions){
                         if(j.type == InstructionType::INSTRUCTION){
                             if(j.opA == i.id){
-                                j.opA = to_string(i.address / 2);
+                                j.opA = to_string(i.address);
                             }
                             if(j.opB == i.id){
-                                j.opB = to_string(i.address / 2);
+                                j.opB = to_string(i.address);
                             }
                         }
                     }
