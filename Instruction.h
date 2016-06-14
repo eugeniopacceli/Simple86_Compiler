@@ -148,7 +148,7 @@ class Instruction{
                     opAType = 'I';
                 }else if(a.at(0) == '_'){
                     opAType = 'M';
-                }else{
+                }else if(a.at(0) == 'A' || a.at(0) == 'B' || a.at(0) == 'C'){
                     opAType = 'R';
                 }
                 
@@ -157,7 +157,7 @@ class Instruction{
                         opBType = 'M';
                     }else if(b.at(0) == '0'){
                         opBType = 'I';
-                    }else{
+                    }else if(a.at(0) == 'A' || a.at(0) == 'B' || a.at(0) == 'C'){
                         opBType = 'R';
                     }
                 }
