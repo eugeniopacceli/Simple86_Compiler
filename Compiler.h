@@ -97,7 +97,7 @@ class Compiler{
             for(Instruction& i : instructions){
                 if(i.type == InstructionType::LABEL || i.type == InstructionType::VAR){
                     if(i.type == InstructionType::VAR){
-                        i.address = this->programSizeInBytes;
+                        i.address = this->programSizeInBytes/2;
                         this->programSizeInBytes += 2;
                     }
 
@@ -109,10 +109,10 @@ class Compiler{
                     for(Instruction& j : instructions){
                         if(j.type == InstructionType::INSTRUCTION){
                             if(j.opA == i.id){
-                                j.opA = to_string(i.address);
+                                j.opA = to_string(i.address<<8)+to_string(i.address);
                             }
                             if(j.opB == i.id){
-                                j.opB = to_string(i.address);
+                                j.opB = to_string(i.address<<8)+to_string(i.address);
                             }
                         }
                     }
