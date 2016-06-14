@@ -1,3 +1,10 @@
+/* Simple86_Compiler main
+ *
+ * Entry point for a program that implements the Simple86 machine.
+ * Specification of that machine is defined in "TP1 - Software Básico.pdf"
+ *
+ */
+
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -7,6 +14,7 @@
 
 using namespace std;
 
+// Output messages in case of error.
 class MainMessages{
     public:
         const static string noSource;
@@ -18,6 +26,11 @@ const string MainMessages::noSource = "Args must contain at least the address of
 const string MainMessages::badInput = "The arguments are not in the expected format.";
 const string MainMessages::badIO = "Could not open or create files. An error has occurred while performing required IO operations.";
 
+/* ------------------------------------------------------------------------
+* int main(int argc, char* argv[])
+* Accepts arguments in different orders, initializes the compiler based on
+* those.
+* ------------------------------------------------------------------------ */
 int main (int argc, char *argv[]){
     bool verboseEnabled = false;
     string outputName = "exec.sa";
@@ -50,6 +63,7 @@ int main (int argc, char *argv[]){
     input = new ifstream(inputName.c_str());
     output = new ofstream(outputName.c_str(),ios::binary);
 
+    // Are the files ok?
     if(input->is_open() && output->is_open()){
         comp = new Compiler(input, output, verboseEnabled);
         comp->compile();
