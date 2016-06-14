@@ -95,7 +95,7 @@ class Instruction{
             if(id == "write") return InstructionCode::WRITE;
             if(id == "ret") return InstructionCode::RET;
             if(id == "dump") return InstructionCode::DUMP;
-            if(id == "halt") return InstructionCode::HALT;
+            if(id == "hlt") return InstructionCode::HALT;
             return InstructionCode::NOPE;
         }
 

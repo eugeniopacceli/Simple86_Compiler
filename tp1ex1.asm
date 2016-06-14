@@ -1,0 +1,5 @@
+READ AX
+SUB AX, 0xA
+JS _exit
+WRITE AX
+_exit: HLT
