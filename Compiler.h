@@ -85,7 +85,7 @@ class Compiler{
             for(Instruction& i : instructions){
                 if(i.type == InstructionType::LABEL || i.type == InstructionType::VAR){
                     if(i.type == InstructionType::VAR){
-                        i.address = this->programSizeInBytes/2;
+                        i.address = this->programSizeInBytes;
                         this->programSizeInBytes += 2;
                     }
 
