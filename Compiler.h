@@ -76,7 +76,7 @@ class Compiler{
         }
 
         void resolveLabels(vector<Instruction>& instructions){
-            string temp;
+       //     string temp;
             if(this->verboseEnabled){
                 cout << left << "Table of names " << setw(15) << setfill('=') << '=' << endl;
                 cout << left << setw(15) << setfill(' ') << "Name";
@@ -98,12 +98,14 @@ class Compiler{
                     for(Instruction& j : instructions){
                         if(j.type == InstructionType::INSTRUCTION){
                             if(j.opA == i.id){
-                                temp = to_string(i.address);
-                                j.opA = temp[2]+temp[3]+temp[0]+temp[1];
+                                opA = to_string(i.address);
+                    //            temp = to_string(i.address);
+                      //          j.opA = temp[2]+temp[3]+temp[0]+temp[1];
                             }
                             if(j.opB == i.id){
-                                temp = to_string(i.address);
-                                j.opB = temp[2]+temp[3]+temp[0]+temp[1];
+                                opB = to_string(i.address);
+                      //          temp = to_string(i.address);
+                    //            j.opB = temp[2]+temp[3]+temp[0]+temp[1];
                             }
                         }
                     }
@@ -169,8 +171,8 @@ class Compiler{
                         this->output->put((char)std::stoul(i.opA, nullptr, 16));
                         this->output->put((char)(std::stoul(i.opA, nullptr, 16) >> 8));
                     } else if(i.opType==OperandType::M || i.opType==OperandType::MI || i.opType==OperandType::MR){
-                        this->output->put((char)(stoi(i.opA) >> 8));
                         this->output->put((char)stoi(i.opA));
+                        this->output->put((char)(stoi(i.opA) >> 8));
                     }
                     
                     //opB
@@ -182,8 +184,8 @@ class Compiler{
                         this->output->put((char)(std::stoul(i.opA, nullptr, 16) >> 8));                        
                     }
                     else if(i.opType==OperandType::RM){
-                        this->output->put((char)(stoi(i.opB) >> 8));
                         this->output->put((char)stoi(i.opB));
+                        this->output->put((char)(stoi(i.opB) >> 8));
                     }
                 }
             }
