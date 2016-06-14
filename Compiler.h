@@ -156,7 +156,7 @@ class Compiler{
                         this->output->put(0);
                         this->output->put((char)i.getRegisterCode(i.opB));
                     } else if(i.opType==OperandType::MI || i.opType==OperandType::RI){
-                        this->output->put((int16_t)std::stoul(i.opB, nullptr, 16));
+                        this->output->put((char)std::stoul(i.opB, nullptr, 16));
                         this->output->put((char)(std::stoul(i.opA, nullptr, 16) >> 8));
                     }
                     else if(i.opType==OperandType::RM){
