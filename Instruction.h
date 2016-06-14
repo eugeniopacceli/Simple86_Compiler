@@ -148,7 +148,7 @@ class Instruction{
                     opAType = 'I';
                 }else if(a.at(0) == '_'){
                     opAType = 'M';
-                }else if(a.at(0) == 'a' || a.at(0) == 'b' || a.at(0) == 'c'){
+                }else{
                     opAType = 'R';
                 }
                 
@@ -157,7 +157,7 @@ class Instruction{
                         opBType = 'M';
                     }else if(b.at(0) == '0'){
                         opBType = 'I';
-                    }else if(b.at(0) == 'a' || b.at(0) == 'b' || b.at(0) == 'c'){
+                    }else{
                         opBType = 'R';
                     }
                 }
@@ -192,7 +192,12 @@ class Instruction{
         Instruction(string full){
             // Removes comments from string
             istringstream untilComment(full);
-            getline(untilComment,this->fullText,';');
+            
+            if(full.find(';') != string::npos){
+                getline(untilComment,this->fullText,';');
+            }else{
+                this->fullText = full;
+            }
 
             // All chars to lower case
             transform(this->fullText.begin(), this->fullText.end(), this->fullText.begin(), ::tolower);

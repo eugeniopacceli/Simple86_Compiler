@@ -41,7 +41,7 @@ class Compiler{
             if(this->verboseEnabled){
                 cout << "The following commands were read:" << endl;
                 cout << left << setw(15) << setfill(' ') << "Pred. Address";
-                cout << left << setw(30) << setfill(' ') << "Command" << endl;
+                cout << left << setw(10) << setfill(' ') << "Command" << endl;
             }
             while(getline(*input, str)){
                 if(str.at(0) == '_'){
@@ -51,7 +51,12 @@ class Compiler{
                     this->program.back().address = programSizeInBytes;
                     if(this->verboseEnabled){
                         cout << left << setw(15) << setfill(' ') << this->program.back().address;
-                        cout << left << setw(30) << setfill(' ') << program.back().fullText << endl;
+                        cout << left << setw(10) << setfill(' ') << program.back().id;
+                        if(!program.back().opA.empty())
+                            cout << this->program.back().opA;
+                        if(!program.back().opB.empty())
+                            cout << "," << this->program.back().opB;
+                        cout << endl;
                     }
                     str = str.substr(split+1,str.size());
                     if(str.empty()){
@@ -69,7 +74,12 @@ class Compiler{
                 // ---
                 if(this->verboseEnabled){
                     cout << left << setw(15) << setfill(' ') << this->program.back().address;
-                    cout << left << setw(30) << setfill(' ') << program.back().fullText << endl;
+                    cout << left << setw(10) << setfill(' ') << program.back().id;
+                    if(!program.back().opA.empty())
+                        cout << this->program.back().opA;
+                    if(!program.back().opB.empty())
+                        cout << "," << this->program.back().opB;
+                    cout << endl;
                 }
             }
             if(this->verboseEnabled){
