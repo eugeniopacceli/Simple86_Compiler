@@ -145,9 +145,10 @@ class Compiler{
                         this->output->put((char)i.getRegisterCode(i.opA));
                     } else if(i.opType==OperandType::I){
                         this->output->put((char)std::stoul(i.opA, nullptr, 16));
+                        this->output->put((char)(std::stoul(i.opA, nullptr, 16) >> 8));
                     } else if(i.opType==OperandType::M || i.opType==OperandType::MI || i.opType==OperandType::MR){
-                        this->output->put(0);
                         this->output->put((char)stoi(i.opA));
+                        this->output->put((char)(stoi(i.opA) >> 8));
                     }
                     
                     //opB
@@ -156,10 +157,11 @@ class Compiler{
                         this->output->put((char)i.getRegisterCode(i.opB));
                     } else if(i.opType==OperandType::MI || i.opType==OperandType::RI){
                         this->output->put((int16_t)std::stoul(i.opB, nullptr, 16));
+                        this->output->put((char)(std::stoul(i.opA, nullptr, 16) >> 8));
                     }
                     else if(i.opType==OperandType::RM){
-                        this->output->put(0);
                         this->output->put((char)stoi(i.opB));
+                        this->output->put((char)(stoi(i.opB) >> 8));
                     }
                 }
             }
