@@ -76,6 +76,7 @@ class Compiler{
         }
 
         void resolveLabels(vector<Instruction>& instructions){
+            string temp;
             if(this->verboseEnabled){
                 cout << left << "Table of names " << setw(15) << setfill('=') << '=' << endl;
                 cout << left << setw(15) << setfill(' ') << "Name";
@@ -97,10 +98,12 @@ class Compiler{
                     for(Instruction& j : instructions){
                         if(j.type == InstructionType::INSTRUCTION){
                             if(j.opA == i.id){
-                                j.opA = to_string(i.address>>8)+to_string(i.address<<8);
+                                temp = to_string(i.address);
+                                j.opA = temp[2]+temp[3]+temp[0]+temp[1];
                             }
                             if(j.opB == i.id){
-                                j.opB = to_string(i.address>>8)+to_string(i.address<<8);
+                                temp = to_string(i.address);
+                                j.opB = temp[2]+temp[3]+temp[0]+temp[1];
                             }
                         }
                     }
