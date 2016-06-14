@@ -156,7 +156,7 @@ class Compiler{
                 if(i.type == INSTRUCTION){
                     
                     //this->output->put(0);
-                    this->output->put((char)i.type);
+                    this->output->put((char)i.opType);
                     //this->output->put(0);
                     this->output->put((char)i.code);
                     
