@@ -1,4 +1,4 @@
-_extern3: ADD AX, BX
+_mod3: ADD AX, BX
 ADD AX, CX
 WRITE AX
 RET
