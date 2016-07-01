@@ -1,10 +1,13 @@
 CC = g++
 FLAGS = -Wall -std=c++11
 
-all: emulator compiler
+all: emulator mounter
 
 emulator : Memory.h Execute.h FetchAndDecode.h
 	$(CC) $(FLAGS) mainEmulator.cpp -o Simple86_Emulator
 
-compiler : Instruction.h Compiler.h
-	$(CC) $(FLAGS) mainCompiler.cpp -o Simple86_Compiler
+mounter : Instruction.h Mounter.h
+	$(CC) $(FLAGS) mainMounter.cpp -o Simple86_Mounter
+
+linker : Instruction.h Linker.h
+	$(CC) $(FLAGS) mainMounter.cpp -o Simple86_Linker

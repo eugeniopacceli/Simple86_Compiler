@@ -1,4 +1,4 @@
-/* Simple86_Compiler main
+/* Simple86_Mounter main
  *
  * Entry point for a program that implements the Simple86 machine.
  * Specification of that machine is defined in "TP1 - Software Básico.pdf"
@@ -10,7 +10,7 @@
 #include <string>
 #include <cstring>
 #include <cstdlib>
-#include "Compiler.h"
+#include "Mounter.h"
 
 using namespace std;
 
@@ -37,7 +37,7 @@ int main (int argc, char *argv[]){
     string inputName = "";
     ifstream* input;
     ofstream* output;
-    Compiler* comp;
+    Mounter* comp;
 
     if(argc < 2){
         cerr << MainMessages::noSource;
@@ -65,8 +65,8 @@ int main (int argc, char *argv[]){
 
     // Are the files ok?
     if(input->is_open() && output->is_open()){
-        comp = new Compiler(input, output, verboseEnabled);
-        comp->compile();
+        comp = new Mounter(input, output, verboseEnabled);
+        comp->mount();
     }else{
         cerr << MainMessages::badIO;
         exit(EXIT_FAILURE);

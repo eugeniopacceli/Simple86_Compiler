@@ -103,7 +103,7 @@ class Instruction{
             if(id == "jmp") return InstructionCode::JUMP;
             if(id == "jz") return InstructionCode::JZ;
             if(id == "js") return InstructionCode::JS;
-            if(id == "call") return InstructionCode::CALL;
+            if(id == "call" || id =="extern") return InstructionCode::CALL;
             if(id == "push") return InstructionCode::PUSH;
             if(id == "pop") return InstructionCode::POP;
             if(id == "read") return InstructionCode::READ;

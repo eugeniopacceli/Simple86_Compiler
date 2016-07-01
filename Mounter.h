@@ -1,12 +1,12 @@
-/* Simple86_Compiler Instruction
+/* Simple86_Mounter Instruction
  *
- * Implements the compiler that translates asm
+ * Implements the mounter that translates asm
  * int Simple86 machine code, outputs binary.
  *
  */
 
-#ifndef SIMULA_COMPILER
-#define SIMULA_COMPILER 1
+#ifndef SIMULA_MOUNTER
+#define SIMULA_MOUNTER 1
 
 #include <fstream>
 #include <iostream>
@@ -19,8 +19,8 @@
 
 using namespace std;
 
-// Compiler module for Simple86
-class Compiler{
+// Mounter module for Simple86
+class Mounter{
 
     private:
         ifstream* input; // input file
@@ -32,10 +32,10 @@ class Compiler{
     public:
 
        /* ------------------------------------------------------------------------
-        * Compiler(ifstream* input, ofstream* output, bool verboseEnabled)
-        * Instantializes a Compiler object that knows it's IO files and the -v flag
+        * Mounter(ifstream* input, ofstream* output, bool verboseEnabled)
+        * Instantializes a Mounter object that knows it's IO files and the -v flag
         * ------------------------------------------------------------------------ */
-        Compiler(ifstream* input, ofstream* output, bool verboseEnabled){
+        Mounter(ifstream* input, ofstream* output, bool verboseEnabled){
             this->input = input;
             this->output = output;
             this->program.clear();
@@ -101,7 +101,7 @@ class Compiler{
         * search the vector again for instructions that used those, and replaces
         * the operands refeering to them to the actual memory address they represent.
         * ------------------------------------------------------------------------ */
-        void resolveLabels(vector<Instruction>& instructions){
+        void resolveLocalLabels(vector<Instruction>& instructions){
             if(this->verboseEnabled){
                 cout << left << "Table of names " << setw(15) << setfill('=') << '=' << endl;
                 cout << left << setw(15) << setfill(' ') << "Name";
@@ -114,26 +114,12 @@ class Compiler{
                     if(i.type == InstructionType::VAR){
                         // Variables are stored after the program. The program is stored at 0
                         i.address = this->programSizeInBytes / 2;
-                        i.id = i.opA; // dw's pseudo instruction id is now it's name
                         this->programSizeInBytes += 2;
                     }
 
                     if(this->verboseEnabled){
                         cout << left << setw(15) << setfill(' ') << i.id;
                         cout << left << setw(15) << setfill(' ') << i.address << endl;
-                    }
-
-                    // Searches for instructions using current label or reserved word
-                    for(Instruction& j : instructions){
-                        // Replaces the labels and memory references by their actual address
-                        if(j.type == InstructionType::INSTRUCTION){
-                            if(j.opA == i.id){
-                                j.opA = to_string(i.address);
-                            }
-                            if(j.opB == i.id){
-                                j.opB = to_string(i.address);
-                            }
-                        }
                     }
                 }
             }
@@ -144,7 +130,7 @@ class Compiler{
         }
 
        /* ------------------------------------------------------------------------
-        * int compile()
+        * int mount()
         * Applies the first and second pass to the program received, generating a
         * binary. This function coordinates the compilation process, which begins
         * with an input file, passes through an array of Instruction objects
@@ -152,9 +138,9 @@ class Compiler{
         * vector which is transformed into a binary file equivalent to the program
         * initially received.
         * ------------------------------------------------------------------------ */
-        int compile(){
+        int mount(){
             this->readProgram(this->input); // First step
-            this->resolveLabels(this->program); // Second step
+            this->resolveLocalLabels(this->program); // Second step
             
             // Writes the end results inside the vector<Instruction> program
             if(this->verboseEnabled){
@@ -163,7 +149,7 @@ class Compiler{
 
             // Transforms the vector<Instruction> program into a real program output
             // to the output file.
-            this->writeBin(this->program);
+            this->writeObject(this->program);
 
             input->close();
             output->close();
@@ -173,7 +159,7 @@ class Compiler{
        /* ------------------------------------------------------------------------
         * void writeTextOutput(vector<Instruction> program)
         * Outputs all the Instructions inside the vector. Used after the second pass
-        * to show what has been understood by the compiler, and to what the labels
+        * to show what has been understood by the mounter, and to what the labels
         * were resolved to.
         * ------------------------------------------------------------------------ */
         void writeTextOutput(vector<Instruction> program){
@@ -208,48 +194,10 @@ class Compiler{
         * The vector is intact. This is the second compilation pass.
         * Uses little endian notation, as required by the Simple86 machine.
         * ------------------------------------------------------------------------ */
-        void writeBin(vector<Instruction> toWrite){
-            
-            // The word representing the address where the first instruction of
-            // the program is at.
-            this->output->put(0);
-            this->output->put(0);
+        void writeObject(vector<Instruction> toWrite){
             // for each instruction inside the vector
             for(Instruction& i : toWrite){
-                if(i.type == INSTRUCTION){
-                    // The ofstream->put(char) function writes in binary
-                    this->output->put((char)i.opType); // Operand type
-                    this->output->put((char)i.code); // Instruction code
-                    
-                    // Outputs opA according to the operand type
-                    if(i.opType==OperandType::R || i.opType==OperandType::RR || i.opType==OperandType::RM || i.opType==OperandType::RI){
-                        this->output->put((char)i.getRegisterCode(i.opA));
-                        this->output->put(0);
-                    } else if(i.opType==OperandType::I){
-                        // Converts the string representing a hexa number to binary
-                        this->output->put((char)std::stoul(i.opA, nullptr, 16));
-                        this->output->put((char)(std::stoul(i.opA, nullptr, 16) >> 8));
-                    } else if(i.opType==OperandType::M || i.opType==OperandType::MI || i.opType==OperandType::MR){
-                        // Converts the string representing a int number to binary
-                        this->output->put((char)stoi(i.opA));
-                        this->output->put((char)(stoi(i.opA) >> 8));
-                    }
-                    
-                    // Outputs opB according to the operand type
-                    if(i.opType==OperandType::RR || i.opType==OperandType::MR){
-                        this->output->put((char)i.getRegisterCode(i.opB));
-                        this->output->put(0);
-                    } else if(i.opType==OperandType::MI || i.opType==OperandType::RI){
-                        // Converts the string representing a hexa number to binary
-                        this->output->put((char)std::stoul(i.opB, nullptr, 16));
-                        this->output->put((char)(std::stoul(i.opA, nullptr, 16) >> 8));                        
-                    }
-                    else if(i.opType==OperandType::RM){
-                        // Converts the string representing a int number to binary
-                        this->output->put((char)stoi(i.opB));
-                        this->output->put((char)(stoi(i.opB) >> 8));
-                    }
-                }
+                this->output->write((char *)(&i), sizeof(Instruction));
             }
         }
 
