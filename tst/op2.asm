@@ -1,4 +1,4 @@
-_extern2: DW C
+_mod2: DW C
 MOV C, AX
 SUB AX, BX
 JS _e2a<b ;A<B
