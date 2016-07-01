@@ -144,6 +144,19 @@ class Linker{
         }
 
        /* ------------------------------------------------------------------------
+        * int linkModule(ifstream* input)
+        * Receives an ifstream from an object module. It appends its binary code
+        * at the end of the current program.
+        * ------------------------------------------------------------------------ */
+       void linkModule(ifstream* input){
+            while(!input->eof()){
+                Instruction temp;
+                input->read((char*)&temp, sizeof(temp));
+                program.push_back(temp);
+            }
+        }
+       
+       /* ------------------------------------------------------------------------
         * int link()
         * Applies the first and second pass to the program received, generating a
         * binary. This function coordinates the compilation process, which begins
