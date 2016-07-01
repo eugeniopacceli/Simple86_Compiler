@@ -61,7 +61,7 @@ int main (int argc, char *argv[]){
     }
 
     input = new ifstream(inputName.c_str());
-    output = new ofstream(outputName.c_str(),ios::binary);
+    output = new ofstream(outputName.c_str(),ios::out|ios::binary);
 
     // Are the files ok?
     if(input->is_open() && output->is_open()){

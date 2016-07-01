@@ -49,11 +49,9 @@ class Linker{
         * vector.
         * ------------------------------------------------------------------------ */
         void readProgram(vector<string> inputStrings){
-        	this->program.clear();
-			for(string& i : inputStrings){
-                ifstream* input = new ifstream(i.c_str(),ios::binary);
-                linkModule(input);
-                input->close();
+            this->program.clear();
+            for(string& i : inputStrings){
+                linkModule(i);
             }
         }
 
@@ -62,14 +60,35 @@ class Linker{
         * Receives an ifstream from an object module. It appends its binary code
         * at the end of the current program and fixes the addresses.
         * ------------------------------------------------------------------------ */
-       void linkModule(ifstream* input){
-            while(!input->eof()){
+       void linkModule(string inputName){
+           ifstream* input = new ifstream(inputName.c_str(),ios::in|ios::binary);
+           
+           while(!input->eof()){
                 Instruction temp;
-                input->read((char*)&temp, sizeof(temp));
+                char fullText[128] = { 0 };
+                char id[128] = { 0 };
+                char opA[128] = { 0 };
+                char opB[128] = { 0 };
+                input->read((char *)fullText, sizeof(char)*128);
+                input->read((char *)id, sizeof(char)*128);
+                input->read((char *)opA, sizeof(char)*128);
+                input->read((char *)opB, sizeof(char)*128);
+                temp.fullText = string(fullText);
+                temp.id = string(id);
+                temp.opA = string(opA);
+                temp.opB = string(opB);
+                input->read((char *)(&temp.type), sizeof(InstructionType));
+                input->read((char *)(&temp.code), sizeof(InstructionCode));
+                input->read((char *)(&temp.opType), sizeof(OperandType));
+                input->read((char *)(&temp.address),sizeof(int16_t));
+                input->read((char *)(&temp.size), sizeof(int16_t));
                 temp.address = programSizeInBytes / 2;
-                this->programSizeInBytes += this->bitSpaceToBytes(temp.size);
-                program.push_back(temp);
-            }
+                if(!temp.fullText.empty()){
+                	this->programSizeInBytes += this->bitSpaceToBytes(temp.size);
+                	this->program.push_back(temp);
+            	}
+            }    
+            input->close();
         }
 
        /* ------------------------------------------------------------------------
@@ -109,14 +128,14 @@ class Linker{
                         }
                     }
 
-					if(this->verboseEnabled){
+                    if(this->verboseEnabled){
                         cout << left << setw(15) << setfill(' ') << i.id;
                         cout << left << setw(15) << setfill(' ') << i.address << endl;
                     }
                 }
             }
 
-			if(this->verboseEnabled){
+            if(this->verboseEnabled){
                 cout << left << setw(30) << setfill('=') << '=' << endl << endl;
             }
 
@@ -136,15 +155,15 @@ class Linker{
             this->readProgram(this->inputs); // First step
             this->resolveLabels(this->program); // Second step
             
-            // Writes the end results inside the vector<Instruction> program
+            //Writes the end results inside the vector<Instruction> program
             if(this->verboseEnabled){
                 this->writeTextOutput(this->program);
             }
 
             // Transforms the vector<Instruction> program into a real program output
             // to the output file.
-            this->writeBin(this->program);
-            output->close();
+            // this->writeBin(this->program);
+            //output->close();
             return 1;
         }
 

@@ -11,6 +11,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <cstring>
 #include <cstdlib>
 #include <cstdint>
 #include <vector>
@@ -197,7 +198,23 @@ class Mounter{
         void writeObject(vector<Instruction> toWrite){
             // for each instruction inside the vector
             for(Instruction& i : toWrite){
-                this->output->write((char *)(&i), sizeof(Instruction));
+                char fullText[128] = { 0 };
+                char id[128] = { 0 };
+                char opA[128] = { 0 };
+                char opB[128] = { 0 };
+                i.fullText.copy(fullText,i.fullText.size(),0);
+                i.id.copy(id,i.id.size(),0);
+                i.opA.copy(opA,i.opA.size(),0);
+                i.opB.copy(opB,i.opB.size(),0);
+                this->output->write((char *)fullText, sizeof(char)*128);
+                this->output->write((char *)id, sizeof(char)*128);
+                this->output->write((char *)opA, sizeof(char)*128);
+                this->output->write((char *)opB, sizeof(char)*128);
+                this->output->write((char *)(&i.type), sizeof(InstructionType));
+                this->output->write((char *)(&i.code), sizeof(InstructionCode));
+                this->output->write((char *)(&i.opType), sizeof(OperandType));
+                this->output->write((char *)(&i.address),sizeof(int16_t));
+                this->output->write((char *)(&i.size), sizeof(int16_t));
             }
         }
 
