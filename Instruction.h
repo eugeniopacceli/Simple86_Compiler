@@ -221,6 +221,9 @@ class Instruction{
         }
 
 
+        Instruction(){
+        }
+
        /* ------------------------------------------------------------------------
         * Instruction(string full)
         * Receives a line from the assembly, and mounts a Instruction object

@@ -23,7 +23,7 @@ using namespace std;
 class Linker{
 
     private:
-        ifstream* input; // input file
+        vector<string> inputs;
         ofstream* output; // outputfile
         vector<Instruction> program; // Program is an array of Instructions
         int16_t programSizeInBytes; // Total number of bytes this program has
@@ -33,64 +33,42 @@ class Linker{
 
        /* ------------------------------------------------------------------------
         * Linker(ifstream* input, ofstream* output, bool verboseEnabled)
-        * Instantializes a Linker object that knows it's IO files and the -v flag
+        * Instantializes a Linker object that knows it's IO files
         * ------------------------------------------------------------------------ */
-        Linker(ifstream* input, ofstream* output, bool verboseEnabled){
-            this->input = input;
+        Linker(vector<string> inputs, ofstream* output, bool verboseEnabled){
+            this->inputs = inputs;
             this->output = output;
             this->program.clear();
             this->programSizeInBytes = 0;
-            this->verboseEnabled = verboseEnabled;
+            this->verboseEnabled = verboseEnabled;            
         }
 
        /* ------------------------------------------------------------------------
         * void readProgram(ifstream* input)
-        * Reads a program from a text file and populates the vector<Instruction> program
-        * object. The first compilation pass. Ends with all instructions and commands
-        * partially decoded, but labels still don't know the address they represent.
+        * Reads all the object files received by parameter and populates the program
+        * vector.
         * ------------------------------------------------------------------------ */
-        void readProgram(ifstream* input){
-            string str;
-            int split;
+        void readProgram(vector<string> inputStrings){
+        	this->program.clear();
+			for(string& i : inputStrings){
+                ifstream* input = new ifstream(i.c_str(),ios::binary);
+                linkModule(input);
+                input->close();
+            }
+        }
 
-            if(this->verboseEnabled){
-                cout << "The following commands were read:" << endl;
-                cout << left << setw(15) << setfill(' ') << "Pred. Address";
-                cout << left << setw(10) << setfill(' ') << "Command" << endl;
-            }
-            // Reads peer line
-            while(getline(*input, str)){
-                // This if detects it there is a label at the current line
-                // splits the label and instruction into two different
-                // strings
-                if(str.at(0) == '_'){
-                    split = str.find( ":", 0);
-                    // Label decode
-                    this->program.push_back(Instruction(str.substr(0,split)));
-                    this->program.back().address = programSizeInBytes / 2;
-                    if(this->verboseEnabled){
-                        this->debugReceivedInstruction(this->program.back());
-                    }
-                    // The instruction after the label.
-                    str = str.substr(split+1,str.size());
-                    if(str.empty()){
-                        continue;
-                    }
-                    if(str.at(0) == ' '){
-                        str = str.substr(1,str.size());
-                    }
-                }
-                // Instruction decode
-                this->program.push_back(Instruction(str));
-                // Address computation
-                this->program.back().address = programSizeInBytes / 2;
-                this->programSizeInBytes += this->bitSpaceToBytes(program.back().size);
-                if(this->verboseEnabled){
-                    this->debugReceivedInstruction(this->program.back());
-                }
-            }
-            if(this->verboseEnabled){
-                cout << endl;
+        /* ------------------------------------------------------------------------
+        * int linkModule(ifstream* input)
+        * Receives an ifstream from an object module. It appends its binary code
+        * at the end of the current program and fixes the addresses.
+        * ------------------------------------------------------------------------ */
+       void linkModule(ifstream* input){
+            while(!input->eof()){
+                Instruction temp;
+                input->read((char*)&temp, sizeof(temp));
+                temp.address = programSizeInBytes / 2;
+                this->programSizeInBytes += this->bitSpaceToBytes(temp.size);
+                program.push_back(temp);
             }
         }
 
@@ -118,11 +96,6 @@ class Linker{
                         this->programSizeInBytes += 2;
                     }
 
-                    if(this->verboseEnabled){
-                        cout << left << setw(15) << setfill(' ') << i.id;
-                        cout << left << setw(15) << setfill(' ') << i.address << endl;
-                    }
-
                     // Searches for instructions using current label or reserved word
                     for(Instruction& j : instructions){
                         // Replaces the labels and memory references by their actual address
@@ -135,25 +108,19 @@ class Linker{
                             }
                         }
                     }
+
+					if(this->verboseEnabled){
+                        cout << left << setw(15) << setfill(' ') << i.id;
+                        cout << left << setw(15) << setfill(' ') << i.address << endl;
+                    }
                 }
             }
 
-            if(this->verboseEnabled){
+			if(this->verboseEnabled){
                 cout << left << setw(30) << setfill('=') << '=' << endl << endl;
             }
-        }
 
-       /* ------------------------------------------------------------------------
-        * int linkModule(ifstream* input)
-        * Receives an ifstream from an object module. It appends its binary code
-        * at the end of the current program.
-        * ------------------------------------------------------------------------ */
-       void linkModule(ifstream* input){
-            while(!input->eof()){
-                Instruction temp;
-                input->read((char*)&temp, sizeof(temp));
-                program.push_back(temp);
-            }
+
         }
        
        /* ------------------------------------------------------------------------
@@ -166,7 +133,7 @@ class Linker{
         * initially received.
         * ------------------------------------------------------------------------ */
         int link(){
-            this->readProgram(this->input); // First step
+            this->readProgram(this->inputs); // First step
             this->resolveLabels(this->program); // Second step
             
             // Writes the end results inside the vector<Instruction> program
@@ -177,8 +144,6 @@ class Linker{
             // Transforms the vector<Instruction> program into a real program output
             // to the output file.
             this->writeBin(this->program);
-
-            input->close();
             output->close();
             return 1;
         }
@@ -186,7 +151,7 @@ class Linker{
        /* ------------------------------------------------------------------------
         * void writeTextOutput(vector<Instruction> program)
         * Outputs all the Instructions inside the vector. Used after the second pass
-        * to show what has been understood by the linkr, and to what the labels
+        * to show what has been understood by the mounter, and to what the labels
         * were resolved to.
         * ------------------------------------------------------------------------ */
         void writeTextOutput(vector<Instruction> program){

@@ -10,4 +10,4 @@ mounter : Instruction.h Mounter.h
 	$(CC) $(FLAGS) mainMounter.cpp -o Simple86_Mounter
 
 linker : Instruction.h Linker.h
-	$(CC) $(FLAGS) mainMounter.cpp -o Simple86_Linker
+	$(CC) $(FLAGS) mainLinker.cpp -o Simple86_Linker

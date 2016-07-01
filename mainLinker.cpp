@@ -33,39 +33,28 @@ const string MainMessages::badIO = "Could not open or create files. An error has
 * ------------------------------------------------------------------------ */
 int main (int argc, char *argv[]){
     bool verboseEnabled = false;
-    string outputName = "exec.sa";
-    string inputName = "";
-    ifstream* input;
     ofstream* output;
     Linker* comp;
+    vector<string> inputFiles;
 
-    if(argc < 2){
+    if(argc < 3){
         cerr << MainMessages::noSource;
         exit(EXIT_FAILURE);
     }
     
-    for(int i = 1; i < argc; i++){
+    output = new ofstream(argv[1],ios::binary);
+
+    for(int i = 2; i < argc; i++){
         if(strcmp(argv[i],"-v") == 0){
             verboseEnabled = true;
-        } else if(strcmp(argv[i],"-o") == 0){
-            outputName = string(argv[i+1]);
-            i++;
-        } else{
-            inputName = string(argv[i]);
+        }else{
+            inputFiles.push_back(string(argv[i]));
         }
     }
 
-    if(inputName.empty()){
-        cerr << MainMessages::badInput;
-        exit(EXIT_FAILURE);
-    }
-
-    input = new ifstream(inputName.c_str());
-    output = new ofstream(outputName.c_str(),ios::binary);
-
     // Are the files ok?
-    if(input->is_open() && output->is_open()){
-        comp = new Linker(input, output, verboseEnabled);
+    if(output->is_open()){
+        comp = new Linker(inputFiles, output, verboseEnabled);
         comp->link();
     }else{
         cerr << MainMessages::badIO;
@@ -73,7 +62,6 @@ int main (int argc, char *argv[]){
     }
 
     delete comp;
-    delete input;
     delete output;
     return EXIT_SUCCESS;
 }
