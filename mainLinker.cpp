@@ -42,8 +42,11 @@ int main (int argc, char *argv[]){
         exit(EXIT_FAILURE);
     }
     
+    // First arg is the output file
     output = new ofstream(argv[1],ios::binary);
 
+    // The rest is eighter -v, meaning verbose mode, or
+    // module files to be merged into a single binary
     for(int i = 2; i < argc; i++){
         if(strcmp(argv[i],"-v") == 0){
             verboseEnabled = true;
@@ -54,6 +57,7 @@ int main (int argc, char *argv[]){
 
     // Are the files ok?
     if(output->is_open()){
+    	// Initializes the linker and begins the process
         comp = new Linker(inputFiles, output, verboseEnabled);
         comp->link();
     }else{

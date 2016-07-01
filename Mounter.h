@@ -1,7 +1,8 @@
 /* Simple86_Mounter Instruction
  *
  * Implements the mounter that translates asm
- * int Simple86 machine code, outputs binary.
+ * into Simple86 machine code, outputs object files
+ * for the linker to use.
  *
  */
 
@@ -96,11 +97,9 @@ class Mounter{
         }
 
        /* ------------------------------------------------------------------------
-        * void resolveLabels(vector<Instruction>& instructions)
-        * The second pass, resolves all labels used in the program by searching
-        * the vector program for labels and dws, then for each one of those found
-        * search the vector again for instructions that used those, and replaces
-        * the operands refeering to them to the actual memory address they represent.
+        * void resolveLocalLabels(vector<Instruction>& instructions)
+        * Detects labels and words. Does not compute their addresses because the
+        * linker will do so in the future.
         * ------------------------------------------------------------------------ */
         void resolveLocalLabels(vector<Instruction>& instructions){
             if(this->verboseEnabled){
@@ -136,8 +135,7 @@ class Mounter{
         * binary. This function coordinates the compilation process, which begins
         * with an input file, passes through an array of Instruction objects
         * representing what has been processed so far, and ends with a fully processed
-        * vector which is transformed into a binary file equivalent to the program
-        * initially received.
+        * vector which is transformed into a object file for the linker to use.
         * ------------------------------------------------------------------------ */
         int mount(){
             this->readProgram(this->input); // First step
@@ -191,9 +189,7 @@ class Mounter{
 
        /* ------------------------------------------------------------------------
         * void writeBin(vector<Instruction> toWrite)
-        * Transforms the vector into a binary program output to the output file.
-        * The vector is intact. This is the second compilation pass.
-        * Uses little endian notation, as required by the Simple86 machine.
+        * Transforms the vector into a binary program output to the linker program.
         * ------------------------------------------------------------------------ */
         void writeObject(vector<Instruction> toWrite){
             // for each instruction inside the vector

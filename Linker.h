@@ -1,7 +1,7 @@
 /* Simple86_Linker Instruction
  *
- * Implements the linkr that translates asm
- * int Simple86 machine code, outputs binary.
+ * Implements the linkr that translates modules objects into
+ * an executable Simple86 machine code, outputs binary.
  *
  */
 
@@ -23,7 +23,7 @@ using namespace std;
 class Linker{
 
     private:
-        vector<string> inputs;
+        vector<string> inputs; // Input modules object files
         ofstream* output; // outputfile
         vector<Instruction> program; // Program is an array of Instructions
         int16_t programSizeInBytes; // Total number of bytes this program has
@@ -56,13 +56,20 @@ class Linker{
         }
 
         /* ------------------------------------------------------------------------
-        * int linkModule(ifstream* input)
-        * Receives an ifstream from an object module. It appends its binary code
-        * at the end of the current program and fixes the addresses.
+        * int linkModule(string inputName)
+        * Receives an name of a module object file. It appends its binary code
+        * at the end of the current program and fixes the addresses. The module
+        * file must be produced by the Mounter provided in this project, it's output
+        * is formatted and accepted by this linker.
         * ------------------------------------------------------------------------ */
        void linkModule(string inputName){
            ifstream* input = new ifstream(inputName.c_str(),ios::in|ios::binary);
            
+           if(!input->is_open()){
+           		cerr << "File " << inputName << " could not be read. Ignoring this module, this may produce unwanted results and errors." << endl;
+           		return;
+           }
+
            while(!input->eof()){
                 Instruction temp;
                 char fullText[128] = { 0 };
@@ -144,12 +151,8 @@ class Linker{
        
        /* ------------------------------------------------------------------------
         * int link()
-        * Applies the first and second pass to the program received, generating a
-        * binary. This function coordinates the compilation process, which begins
-        * with an input file, passes through an array of Instruction objects
-        * representing what has been processed so far, and ends with a fully processed
-        * vector which is transformed into a binary file equivalent to the program
-        * initially received.
+        * Reads modules object files. Resolve addresses and writes an executable
+        * binary to the output file.
         * ------------------------------------------------------------------------ */
         int link(){
             this->readProgram(this->inputs); // First step
@@ -162,8 +165,8 @@ class Linker{
 
             // Transforms the vector<Instruction> program into a real program output
             // to the output file.
-            // this->writeBin(this->program);
-            //output->close();
+            this->writeBin(this->program);
+            output->close();
             return 1;
         }
 
