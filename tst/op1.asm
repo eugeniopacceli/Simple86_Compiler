@@ -1,4 +1,4 @@
-_extern1: DW B
+_mod1: DW B
 MOV B, AX
 SUB AX, BX
 JS _e1a<b
