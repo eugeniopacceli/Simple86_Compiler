@@ -1,16 +1,16 @@
 _extern1: DW B
 MOV B, AX
 SUB AX, BX
-JS _a<b
+JS _e1a<b
 MOV AX, B
 SUB AX, CX
-JS _<c
+JS _e1<c
 WRITE B
 RET
-_a<b: MOV B, BX
+_e1a<b: MOV B, BX
 SUB BX, CX
-JS _<c
+JS _e1<c
 WRITE B
 RET
-_<c: WRITE CX
+_e1<c: WRITE CX
 RET
