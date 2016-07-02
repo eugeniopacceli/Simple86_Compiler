@@ -80,7 +80,7 @@ public:
             memory->setRegister(memory->getRegName(destiny), memory->readMemory(source));
             break;
         case opMR:
-            memory->writeMemory(destiny, memory->getRegName(source));
+            memory->writeMemory(destiny, memory->getRegister(memory->getRegName(source)));
             break;
         case opRR:
             memory->setRegister(memory->getRegName(destiny), memory->getRegister(memory->getRegName(source)));
@@ -163,26 +163,30 @@ public:
             reg = memory->getRegName(destiny);
             opA = memory->getRegister(reg);
             opB = memory->readMemory(source);
-            opB -= opA;
-            memory->setRegister(reg, opB);
+            opA -= opB;
+            memory->setRegister(reg, opA);
             break;
         case opMR:
             opA = memory->readMemory(destiny);
             reg = memory->getRegName(source);
             opB = memory->getRegister(reg);
-            memory->writeMemory(destiny, opA - opB);
+            opA -= opB;
+            memory->writeMemory(destiny, opA);
             break;
         case opRR:
             reg = memory->getRegName(source);
             opB = memory->getRegister(reg);
             reg = memory->getRegName(destiny);
             opA = memory->getRegister(reg);
-            memory->setRegister(reg, opA - opB);
+            opA -= opB;
+            memory->setRegister(reg, opA);
             break;
         case opMI:
             opA = memory->readMemory(destiny);
             opB = memory->readMemory(opA);
-            memory->writeMemory(opA, opB - source);
+            opB -= source;
+            memory->writeMemory(opA, opB);
+            opA = opB;
             break;
         case opRI:
             reg = memory->getRegName(destiny);
@@ -257,26 +261,30 @@ public:
             reg = memory->getRegName(destiny);
             opA = memory->getRegister(reg);
             opB = memory->readMemory(source);
-            opB &= opA;
-            memory->setRegister(reg, opB);
+            opA &= opB;
+            memory->setRegister(reg, opA);
             break;
         case opMR:
             opA = memory->readMemory(destiny);
             reg = memory->getRegName(source);
             opB = memory->getRegister(reg);
-            memory->writeMemory(destiny, opA & opB);
+            opA &= opB;
+            memory->writeMemory(destiny, opA);
             break;
         case opRR:
             reg = memory->getRegName(source);
             opB = memory->getRegister(reg);
             reg = memory->getRegName(destiny);
             opA = memory->getRegister(reg);
-            memory->setRegister(reg, opA & opB);
+            opA &= opB;
+            memory->setRegister(reg, opA);
             break;
         case opMI:
             opA = memory->readMemory(destiny);
             opB = memory->readMemory(opA);
-            memory->writeMemory(opA, opB&source);
+            opB &= source;
+            memory->writeMemory(opA, opB);
+            opA = opB;
             break;
         case opRI:
             reg = memory->getRegName(destiny);
@@ -303,27 +311,30 @@ public:
             reg = memory->getRegName(destiny);
             opA = memory->getRegister(reg);
             opB = memory->readMemory(source);
-            opB |= opA;
-            memory->setRegister(reg, opB);
+            opA |= opB;
+            memory->setRegister(reg, opA);
             break;
         case opMR:
             opA = memory->readMemory(destiny);
             reg = memory->getRegName(source);
             opB = memory->getRegister(reg);
-            memory->writeMemory(destiny, opA | opB);
+            opA |= opB;
+            memory->writeMemory(destiny, opA);
             break;
         case opRR:
             reg = memory->getRegName(source);
             opB = memory->getRegister(reg);
             reg = memory->getRegName(destiny);
             opA = memory->getRegister(reg);
-            memory->setRegister(reg, opA | opB);
-            break;
+            opA |= opB;
+            memory->setRegister(reg, opA);
             break;
         case opMI:
             opA = memory->readMemory(destiny);
             opB = memory->readMemory(opA);
-            memory->writeMemory(opA, opB | source);
+            opB |= source;
+            memory->writeMemory(opA, opB);
+            opA = opB;
             break;
         case opRI:
             reg = memory->getRegName(destiny);
