@@ -1,7 +1,7 @@
 CC = g++
 FLAGS = -Wall -std=c++11
 
-all: emulator mounter
+all: emulator mounter linker
 
 emulator : Memory.h Execute.h FetchAndDecode.h
 	$(CC) $(FLAGS) mainEmulator.cpp -o Simple86_Emulator
