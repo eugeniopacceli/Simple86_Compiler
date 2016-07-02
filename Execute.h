@@ -80,7 +80,7 @@ public:
             memory->setRegister(memory->getRegName(destiny), memory->readMemory(source));
             break;
         case opMR:
-            memory->writeMemory(destiny, memory->getRegName(source));
+            memory->writeMemory(destiny, memory->getRegister(memory->getRegName(source)));
             break;
         case opRR:
             memory->setRegister(memory->getRegName(destiny), memory->getRegister(memory->getRegName(source)));
